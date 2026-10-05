@@ -14,10 +14,11 @@ type DragState =
 
 type StickyNoteProps = {
   note: Note;
+  onDrag: (positionX: number, positionY: number) => void;
   onDragEnd: (positionX: number, positionY: number) => void;
 };
 
-export const StickyNote = ({ note, onDragEnd }: StickyNoteProps) => {
+export const StickyNote = ({ note, onDrag, onDragEnd }: StickyNoteProps) => {
   const [drag, setDrag] = useState<DragState>({ type: 'idle' });
 
   const positionX = drag.type === 'moving' ? drag.positionX : note.positionX;
@@ -48,6 +49,8 @@ export const StickyNote = ({ note, onDragEnd }: StickyNoteProps) => {
 
     const nextPositionX = drag.positionX + event.clientX - drag.startX;
     const nextPositionY = drag.positionY + event.clientY - drag.startY;
+
+    onDrag(nextPositionX, nextPositionY);
 
     setDrag({
       type: 'moving',
