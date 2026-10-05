@@ -8,6 +8,7 @@ export const StickyNoteBoard = () => {
     isTrashTargeted,
     boardRef,
     trashRef,
+    onStickyNoteDragStart,
     onStickyNoteDrag,
     onStickyNoteDragEnd,
   } = useStickyNoteBoard();
@@ -17,19 +18,30 @@ export const StickyNoteBoard = () => {
       ref={boardRef}
       style={{ position: 'relative', width: '100vw', height: '100vh' }}
     >
-      {notes.map((note) => (
-        <StickyNote
-          key={note.id}
-          note={note}
-          onDrag={(positionX, positionY) =>
-            onStickyNoteDrag(note, positionX, positionY)
-          }
-          onDragEnd={(positionX, positionY) =>
-            onStickyNoteDragEnd(note, positionX, positionY)
-          }
-        />
-      ))}
-      <div style={{ position: 'absolute', bottom: '1rem', right: '1rem' }}>
+      <div style={{ position: 'absolute', zIndex: 2 }}>
+        {notes.map((note, index) => (
+          <StickyNote
+            key={note.id}
+            note={note}
+            zIndex={index + 1}
+            onDragStart={() => onStickyNoteDragStart(note)}
+            onDrag={(positionX, positionY) =>
+              onStickyNoteDrag(note, positionX, positionY)
+            }
+            onDragEnd={(positionX, positionY) =>
+              onStickyNoteDragEnd(note, positionX, positionY)
+            }
+          />
+        ))}
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '1rem',
+          right: '1rem',
+          zIndex: 1,
+        }}
+      >
         <TrashZone isTargeted={isTrashTargeted} trashRef={trashRef} />
       </div>
     </div>

@@ -8,6 +8,7 @@ type StickyNoteBoard = {
   isTrashTargeted: boolean;
   boardRef: RefObject<HTMLDivElement | null>;
   trashRef: RefObject<HTMLDivElement | null>;
+  onStickyNoteDragStart: (draggedNote: Note) => void;
   onStickyNoteDrag: (
     draggedNote: Note,
     positionX: number,
@@ -50,6 +51,17 @@ export const useStickyNoteBoard = (): StickyNoteBoard => {
       noteTop > trashRect.bottom || noteTop + note.height < trashRect.top;
 
     return !isSeparatedHorizontally && !isSeparatedVertically;
+  };
+
+  const onStickyNoteDragStart = (draggedNote: Note) => {
+    const frontNote = notes[notes.length - 1];
+    if (frontNote?.id === draggedNote.id) {
+      return;
+    }
+
+    setNotes(
+      notes.filter((note) => note.id !== draggedNote.id).concat(draggedNote),
+    );
   };
 
   const onStickyNoteDrag = (
@@ -95,6 +107,7 @@ export const useStickyNoteBoard = (): StickyNoteBoard => {
     isTrashTargeted,
     boardRef,
     trashRef,
+    onStickyNoteDragStart,
     onStickyNoteDrag,
     onStickyNoteDragEnd,
   };

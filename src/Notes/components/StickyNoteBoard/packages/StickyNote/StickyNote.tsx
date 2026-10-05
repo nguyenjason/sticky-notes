@@ -14,11 +14,19 @@ type DragState =
 
 type StickyNoteProps = {
   note: Note;
+  zIndex: number;
+  onDragStart: () => void;
   onDrag: (positionX: number, positionY: number) => void;
   onDragEnd: (positionX: number, positionY: number) => void;
 };
 
-export const StickyNote = ({ note, onDrag, onDragEnd }: StickyNoteProps) => {
+export const StickyNote = ({
+  note,
+  zIndex,
+  onDragStart,
+  onDrag,
+  onDragEnd,
+}: StickyNoteProps) => {
   const [drag, setDrag] = useState<DragState>({ type: 'idle' });
 
   const positionX = drag.type === 'moving' ? drag.positionX : note.positionX;
@@ -32,6 +40,8 @@ export const StickyNote = ({ note, onDrag, onDragEnd }: StickyNoteProps) => {
     // Retargets the pointer event to this note until release
     // without it fast drags leave the element and handlePointerMove stops firing.
     event.currentTarget.setPointerCapture(event.pointerId);
+
+    onDragStart();
 
     setDrag({
       type: 'moving',
@@ -78,6 +88,7 @@ export const StickyNote = ({ note, onDrag, onDragEnd }: StickyNoteProps) => {
         background: '#fef08a',
         borderRadius: '0.25rem',
         boxShadow: '0 0.125rem 0.375rem rgb(0 0 0 / 20%)',
+        zIndex,
         left: `${positionX}px`,
         top: `${positionY}px`,
         width: `${note.width}px`,
