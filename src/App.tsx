@@ -1,3 +1,5 @@
-export default function App() {
-  return null;
-}
+import { StickyNoteBoard } from './Notes/components/StickyNoteBoard/StickyNoteBoard';
+
+const App = () => <StickyNoteBoard />;
+
+export default App;
