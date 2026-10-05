@@ -39,21 +39,21 @@ export const StickyNoteBoard = () => {
       <div
         style={{
           position: 'absolute',
+          top: '1rem',
+          right: '1rem',
+          zIndex: 3,
+        }}
+      >
+        <StickyNoteCreateButton onCreate={onStickyNoteCreate} />
+      </div>
+      <div
+        style={{
+          position: 'absolute',
           inset: 0,
           zIndex: 1,
           pointerEvents: 'none',
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            pointerEvents: 'auto',
-          }}
-        >
-          <StickyNoteCreateButton onCreate={onStickyNoteCreate} />
-        </div>
         <div
           style={{
             position: 'absolute',
