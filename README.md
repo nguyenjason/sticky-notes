@@ -9,6 +9,12 @@ npm run dev
 
 Open the printed localhost URL in a browser.
 
+## Assumptions
+
+- Desktop only, mouse-driven.
+- Small number of stickies.
+- Styling is minimal on purpose. The time went into the architecture and the user experience.
+
 ## Features
 
 The assignment requires at least three of the four core features; three are implemented.
