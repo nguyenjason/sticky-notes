@@ -1,5 +1,6 @@
 import { useStickyNoteBoard } from '../../hooks/useStickyNoteBoard';
 import { StickyNote } from './packages/StickyNote/StickyNote';
+import { StickyNoteCreateButton } from './packages/StickyNoteCreateButton/StickyNoteCreateButton';
 import { TrashZone } from './packages/TrashZone/TrashZone';
 
 export const StickyNoteBoard = () => {
@@ -8,6 +9,7 @@ export const StickyNoteBoard = () => {
     isTrashTargeted,
     boardRef,
     trashRef,
+    onStickyNoteCreate,
     onStickyNoteDragStart,
     onStickyNoteDrag,
     onStickyNoteDragEnd,
@@ -37,12 +39,30 @@ export const StickyNoteBoard = () => {
       <div
         style={{
           position: 'absolute',
-          bottom: '1rem',
-          right: '1rem',
+          inset: 0,
           zIndex: 1,
+          pointerEvents: 'none',
         }}
       >
-        <TrashZone isTargeted={isTrashTargeted} trashRef={trashRef} />
+        <div
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            pointerEvents: 'auto',
+          }}
+        >
+          <StickyNoteCreateButton onCreate={onStickyNoteCreate} />
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '1rem',
+            right: '1rem',
+          }}
+        >
+          <TrashZone isTargeted={isTrashTargeted} trashRef={trashRef} />
+        </div>
       </div>
     </div>
   );

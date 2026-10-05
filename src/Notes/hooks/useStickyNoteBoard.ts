@@ -1,13 +1,31 @@
 import { useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import type { Note } from '../types/Note';
-import { useNotes } from './useNotes';
+import { noteSize } from '../types/Note';
+
+const mockedNotes: Note[] = [
+  {
+    id: 'a',
+    positionX: 40,
+    positionY: 40,
+    width: noteSize.width,
+    height: noteSize.height,
+  },
+  {
+    id: 'b',
+    positionX: 260,
+    positionY: 120,
+    width: noteSize.width,
+    height: noteSize.height,
+  },
+];
 
 type StickyNoteBoard = {
   notes: Note[];
   isTrashTargeted: boolean;
   boardRef: RefObject<HTMLDivElement | null>;
   trashRef: RefObject<HTMLDivElement | null>;
+  onStickyNoteCreate: () => void;
   onStickyNoteDragStart: (draggedNote: Note) => void;
   onStickyNoteDrag: (
     draggedNote: Note,
@@ -21,8 +39,11 @@ type StickyNoteBoard = {
   ) => void;
 };
 
+const spawnPosition = 40;
+const spawnOffset = 24;
+
 export const useStickyNoteBoard = (): StickyNoteBoard => {
-  const { notes, setNotes } = useNotes();
+  const [notes, setNotes] = useState<Note[]>(mockedNotes);
   const [isTrashTargeted, setIsTrashTargeted] = useState(false);
 
   const boardRef = useRef<HTMLDivElement>(null);
@@ -51,6 +72,20 @@ export const useStickyNoteBoard = (): StickyNoteBoard => {
       noteTop > trashRect.bottom || noteTop + note.height < trashRect.top;
 
     return !isSeparatedHorizontally && !isSeparatedVertically;
+  };
+
+  const onStickyNoteCreate = () => {
+    const offset = (notes.length % 6) * spawnOffset;
+
+    setNotes(
+      notes.concat({
+        id: crypto.randomUUID(),
+        positionX: spawnPosition + offset,
+        positionY: spawnPosition + offset,
+        width: noteSize.width,
+        height: noteSize.height,
+      }),
+    );
   };
 
   const onStickyNoteDragStart = (draggedNote: Note) => {
@@ -107,6 +142,7 @@ export const useStickyNoteBoard = (): StickyNoteBoard => {
     isTrashTargeted,
     boardRef,
     trashRef,
+    onStickyNoteCreate,
     onStickyNoteDragStart,
     onStickyNoteDrag,
     onStickyNoteDragEnd,
