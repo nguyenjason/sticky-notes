@@ -1,4 +1,4 @@
-# Tempo Sticky Notes
+# Sticky Notes
 
 ## Getting started
 
