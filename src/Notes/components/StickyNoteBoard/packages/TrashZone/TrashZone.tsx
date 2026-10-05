@@ -22,7 +22,7 @@ export const TrashZone = ({ isTargeted, trashRef }: TrashZoneProps) => {
         pointerEvents: 'none',
       }}
     >
-      Trash
+      Drop a sticky here to trash
     </div>
   );
 };
