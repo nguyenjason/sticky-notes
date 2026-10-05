@@ -32,15 +32,19 @@ The optional features are bonuses; one is implemented.
 
 ## Architecture
 
-State is split by intent: the `StickyNoteBoard` owns the list of notes, and each `StickyNote` owns its drag state while a drag is in progress, as a discriminated union (`idle` or `moving`). During a drag, the Sticky Note updates its own position based on how far the pointer has moved and re-renders itself; the `StickyNoteBoard` re-renders when the Sticky Note is pressed to be brought to front, when it enters or leaves the trash zone, and when the drag ends. Each of those board re-renders also re-renders the other Sticky Notes, which is acceptable for a first-pass implementation at small note counts; if note counts grow, memoizing `StickyNote` with stable callbacks is the upgrade. All mutations (create, bring to front, delete, and position updates) are handlers on `useStickyNoteBoard`, the single hook that owns the notes state and passes it to one `StickyNoteBoard` component.
+State is split by intent: the `StickyNoteBoard` owns the list of notes, and each `StickyNote` owns its drag state while a drag is in progress, as a discriminated union (`idle` or `moving`). During a drag, the Sticky Note updates its own position based on how far the pointer has moved and re-renders itself.
 
-Stacking is modeled as data: notes and controls live in separate stacking contexts on the `StickyNoteBoard`, and each note's `zIndex` derives from its position in the notes array, so bring-to-front is a reorder.
+The `StickyNoteBoard` re-renders when the Sticky Note is pressed to be brought to front, when it enters or leaves the trash zone, and when the drag ends. Each of those re-renders also re-renders the other Sticky Notes, which is acceptable for a first pass at small note counts; we would optimize with memoization if needed.
+
+All mutations (create, bring to front, delete, and position updates) are handlers on `useStickyNoteBoard`, the single hook that owns the notes state and passes it to one `StickyNoteBoard` component.
+
+The board organizes stacking with two stacking contexts: one for the notes and one for the controls. Each note's `zIndex` derives from its position in the notes array, so bringing a note to the front is a reorder.
 
 ## Known limitations
 
-If the mocked REST API (Saving notes to REST API) were implemented, the app would keep one top-level notes array and each mutation would reload it. Two problems would show up.
+If the mocked REST API (Saving notes to REST API) were implemented, the app would keep the notes list in one shared array and each mutation would reload it. Two problems would show up.
 
-### Whole-list reloads
+### Reloading the whole list
 
 Every mutation would refetch and replace the entire list, so the `StickyNote`s would briefly re-render their old positions after each action until the request finished. One option is to not reload the top level at all: mutations resolve their own responses into the list, and reloading becomes an explicit action instead of part of every write.
 
